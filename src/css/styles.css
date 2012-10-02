@@ -1,0 +1,59 @@
+.masthead{
+    text-align: center;
+
+    img {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        padding-top: 2em;
+        padding-bottom: 2em;
+    }
+}
+
+.form {
+    text-align: center;
+}
+
+footer {
+    margin-top: 5em;
+}
+
+#error-msg {
+    display: none;
+}
+
+.output {
+    margin: 2px;
+    display: none;
+    height: 96px;
+    overflow: auto;
+    border-style: dotted;
+    border-width: 1px;
+    font-family: monospace;
+}
+
+.band-list {
+    display: none;
+}
+
+
+/* Portrait tablet to landscape and desktop */
+@media (min-width: 768px) and (max-width: 979px) {
+    .output {
+        height: 76px;
+    }
+}
+
+/* Landscape phone to portrait tablet */
+@media (max-width: 767px) {
+    .output {
+        height: 76px;
+    }
+}
+
+/* Landscape phones and down */
+@media (max-width: 480px) {
+    .output {
+        height: 76px;
+    }
+}

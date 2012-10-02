@@ -17,32 +17,100 @@
         <!-- Styles! -->
         <link href="css/bootstrap.min.css" type="text/css" rel="stylesheet">
         <link href="css/bootstrap-responsive.min.css" type="text/css" rel="stylesheet">
+        <link href="css/styles.css" type="text/css" rel="stylesheet">
     </head>
     <body>
 
         <header>
         </header>
-
-        <div class="container-fluid">
-
-        </div>
-        <div class="container-fluid hero-unit">
-            <div class="row-fluid" style="margin:auto;">
-                <img class="logo" src="img/logo.png" style="margin:auto;">
-                <h1>Welcome!</h1>
-                <p> Click <a href="auth/">login with last.fm</a> to begin.</p>
+        <div class="container-fluid masthead">
+            <img class="logo" src="img/logo.png">
+            <h1>SWN Festival Artist Recommender</h1>
+            <p>Compare your last.fm listening profile with the SWN Festival 2012 lineup to discover who you should be going to see!</p>
+            <div id="error-msg">
             </div>
         </div>
 
-        <footer>
-            <div class="container">
-                <small>
-                    <p>Created by @martinjc Code available at martinjc.github.com</p>
-                </small>
-            </div>
+        <div class="container-fluid form">
+            <form class="form-inline">
+                <div class="control-group" id="controls">
+                    <input id="username" type="text" placeholder="Last.FM username...">
+                    <button id="submit" type="submit" class="btn btn-large">Recommend me some bands!</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="container-fluid output">
+            <p></p>
+        </div>
+        <div class="container-fluid band-list">
+            <h1 id="progress">Bands!</h1>
+            <div class="row-fluid">
+                <div class="span3">
+                    <h1>Thursday</h1>
+                    <ul class="unstyled" id="thurs">
+                    </ul>
+                </div>
+                <div class="span3">
+                    <h1>Friday</h1>
+                    <ul class="unstyled" id="fri">
+                    </ul>
+                </div>
+                <div class="span3">
+                    <h1>Saturday</h1>
+                    <ul class="unstyled" id="sat">
+                    </ul>
+                </div>
+                <div class="span3">
+                    <h1>Sunday</h1>
+                    <ul class="unstyled" id="sun">
+                    </ul>
+                </div>
+            <div>
+        <div>
+
+        <footer class="container-fluid">
+                <small>hacked together by <a href="https://twitter.com/intent/user?screen_name=martinjc">@martinjc</a> - <a href="#modal-about" data-toggle="modal">more info?</a></small>
         </footer>
 
+        <aside id="modal-about" class="modal hide fade">
+            <h2 class="modal-header">About<a href="#" class="close" data-dismiss="modal" >&times;</a></h2>
+            <div class="modal-body">
+                <h4>What?</h4>
+                <p></p>
+                <h4>Why?</h4>
+                <p></p>
+                <h4>How?</h4>
+                <p>T</p>
+                <h4>When?</h4>
+                <p></p>
+                <h4>Who?</h4>
+                <p>Created by <a href="https://twitter.com/intent/user?screen_name=martinjc">@martinjc</a></p>
+                <h4>Where?</h4>
+                <p>Cardiff of course, 18th - 22nd October 2012. Come on down, it'll be ace like when you're ten.</p>
+            </div>
+        </aside>
         <!-- Javascript down here! -->
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/lastfm.api.cache.js"></script>
+        <script src="js/lastfm.api.md5.js"></script>
+        <script src="js/lastfm.api.js"></script>
+        <script src="js/secrets.js"></script>
+        <script src="js/recommend.js"></script>
+        <script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
+        <script type="text/javascript">
+
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', googleAnalytics]);
+          _gaq.push(['_trackPageview']);
+
+          (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+
+        </script>
     </body>
 </html>
