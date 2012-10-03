@@ -38,13 +38,18 @@
                     <button id="submit" type="submit" class="btn btn-large">Recommend me some bands!</button>
                 </div>
             </form>
+            <form class="form-inline" id="similarity-form">
+                <div class="control-group" id="controls">
+                    <input id="similarity" type="range" max="20" min="0" step="1" value="3">
+                </div>
+            </form>
         </div>
 
         <div class="container-fluid output">
             <p></p>
         </div>
+
         <div class="container-fluid band-list">
-            <h1 id="progress">Bands!</h1>
             <div class="row-fluid">
                 <div class="span3">
                     <h1>Thursday</h1>
@@ -66,8 +71,8 @@
                     <ul class="unstyled" id="sun">
                     </ul>
                 </div>
-            <div>
-        <div>
+            </div>
+        </div>
 
         <footer class="container-fluid">
                 <small>hacked together by <a href="https://twitter.com/intent/user?screen_name=martinjc">@martinjc</a> - <a href="#modal-about" data-toggle="modal">more info?</a></small>
@@ -81,7 +86,7 @@
                 <h4>Why?</h4>
                 <p></p>
                 <h4>How?</h4>
-                <p>T</p>
+                <p></p>
                 <h4>When?</h4>
                 <p></p>
                 <h4>Who?</h4>

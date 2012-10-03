@@ -53,7 +53,7 @@ function compare_bands() {
             for(var j in bands) {
                 if(!($.isEmptyObject(bands[j].tags))) {
                     var similarity = compare_band(bands[j]);
-                    if(similarity < 0.05) {
+                    if(similarity < 0.1) {
                         console.log(bands[j].artist_name);
                         $('#' + day).append('<li id="' + bands[j].artist_name + '">'+ bands[j].artist +'</li>')
                     }
@@ -151,6 +151,7 @@ $(function() {
             },
             {
                 success: function(data){
+                    console.log(data);
                     hide_logo();
                     getTopArtists(userName);
                     $('.output').slideDown(500);

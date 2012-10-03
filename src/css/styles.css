@@ -30,6 +30,8 @@ footer {
     border-style: dotted;
     border-width: 1px;
     font-family: monospace;
+    line-height: 1.0em;
+    font-size: 0.8em;
 }
 
 .band-list {
