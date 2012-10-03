@@ -55,6 +55,15 @@ function load_band_data() {
 
 
 function compare_bands() {
+    var max = 0;
+    for(var j in user_tags) {
+        if(user_tags[j] > max) {
+            max = user_tags[j];
+        }
+    }
+    for(var j in user_tags) {
+        user_tags[j] /= max;
+    }
     for(var i in band_data) {
         var day = band_data[i].day;
         var bands = band_data[i].bands;
@@ -105,16 +114,8 @@ function getArtistTags(artist) {
                         user_tags[artist_tags[j].name] = +artist_tags[j].count;
                     } else {
                         user_tags[artist_tags[j].name] += +artist_tags[j].count;
+                        user_tags[artist_tags[j].name] /= 2;
                     }
-                }
-                var max = 0;
-                for(var j in user_tags) {
-                    if(user_tags[j] > max) {
-                        max = user_tags[j];
-                    }
-                }
-                for(var j in user_tags) {
-                    user_tags[j] /= max;
                 }
                 dfd.resolve();
             },
@@ -131,8 +132,8 @@ function getTopArtists(user) {
     var complete = 0;
     var artists = lastfm.user.getTopArtists({
         user: user,
-        period: "12month",
-        limit: 25,
+        period: "6month",
+        limit: 100,
     },
     {
         success: function(data){
@@ -173,32 +174,39 @@ $(function() {
 
     $('form').submit(function() {
 
+
+        // reset the page
         $('.band-list').slideUp(500);
         $('#thurs').html('');
         $('#fri').html('');
         $('#sat').html('');
         $('#sun').html('');
 
-        /* Create a cache object */
+        // Create a cache object
         var cache = new LastFMCache();
 
-        /* Create a LastFM object */
+        // Create a LastFM object
         lastfm = new LastFM({
             apiKey    : api_key,
             apiSecret : api_secret,
             cache     : cache
         });
 
+        // load the local band data for SWNFest
         load_band_data();
 
+        // get the username from the input field
         var userName = $('#username').val();
 
+        // check we have a username, if so, retrieve details from Last.FM to check it's a valid user, otherwise display error
         if(userName === "") {
             show_error('#error-msg', 'Ummm...', 'did you forget to enter your last.fm username?');
             $('#controls').addClass('error');
         } else {
+            // get rid of any error applied
             $('#controls').removeClass('error');
             hide_error('#error-msg');
+            // move page to be ready to show list
             do_transition();
             user = lastfm.user.getInfo({
                 user: userName
