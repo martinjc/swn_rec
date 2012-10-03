@@ -22,6 +22,10 @@ footer {
     display: none;
 }
 
+#similarity-form {
+    display: none;
+}
+
 .output {
     margin: 2px;
     display: none;

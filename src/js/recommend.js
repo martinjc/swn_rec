@@ -1,6 +1,6 @@
 var user_tags = {};
-var user_tag_list = [];
-var lastfm;
+var band_data = undefined;
+var lastfm = undefined;
 
 function show_error(dom, title, message) {
     $(dom).hide().html('<div class="alert alert-error fade in"><a href="#" class="close" data-dismiss="alert">&times;</a><strong>' + title + '</strong> ' + message + '</div>').slideDown(500);
@@ -10,8 +10,10 @@ function hide_error(dom) {
     $(dom).slideUp(500);
 }
 
-function hide_logo() {
-    $('.masthead').slideUp(1000);
+function do_transition() {
+    $('.masthead').slideUp(500);
+    $('.output').slideDown(500);
+    $('#similarity-form').slideDown(500);
 }
 
 function progress(message) {
@@ -37,33 +39,49 @@ function compare_band(band) {
 
     similarity = total_sum / (a_sum * b_sum);
 
+    // have to hack the fact that some bands just don't have any tags
+    if (similarity === "NaN") {
+        similarity = 1;
+    }
+
     console.log(band.artist + ': ' + similarity);
 
     return similarity;
 }
 
+function load_band_data() {
+    console.log('loading band data');
+    band_data = band_data;
+    return $.getJSON('data/bands.json', function(data) {
+        band_data = data;
+    });
+}
+
 
 function compare_bands() {
-    $('.band-list').slideDown(500);
-    $.getJSON('data/bands.json', function(data){
-        band_data = data;
-        for(var i in band_data) {
-            var day = band_data[i].day;
-            var bands = band_data[i].bands;
-            for(var j in bands) {
-                if(!($.isEmptyObject(bands[j].tags))) {
-                    var similarity = compare_band(bands[j]);
-                    if(similarity < 0.1) {
-                        console.log(bands[j].artist_name);
-                        $('#' + day).append('<li id="' + bands[j].artist_name + '">'+ bands[j].artist +'</li>')
-                    }
-                    else {
-                        console.log('pish');
-                    }
+    for(var i in band_data) {
+        var day = band_data[i].day;
+        var bands = band_data[i].bands;
+        for(var j in bands) {
+            if(!($.isEmptyObject(bands[j].tags))) {
+                var similarity = compare_band(bands[j]);
+                if(similarity < req_similarity) {
+                    console.log(bands[j].artist_name);
+                    $('#' + day).append('<li id="' + bands[j].artist_name + '" data-similarity="' + similarity + '">'+ bands[j].artist +'</li>')
+                }
+                else {
+                    console.log('pish');
                 }
             }
         }
-    });
+    }
+    $('.band-list').slideDown(500);
+    do_comparison();
+}
+
+function do_comparison(){
+    var req_similarity = +$('#similarity').val();
+    req_similarity /= 20;
 }
 
 function getArtistTags(artist) {
@@ -77,7 +95,6 @@ function getArtistTags(artist) {
                 progress("retrieved tags for: " + artist);
                 var artist_tags = data.toptags.tag;
                 for(var j in artist_tags) {
-                    user_tag_list.push(artist_tags[j].name);
                     if(user_tags[artist_tags[j].name] === undefined) {
                         user_tags[artist_tags[j].name] = +artist_tags[j].count;
                     } else {
@@ -113,7 +130,6 @@ function getTopArtists(user) {
             }
             $.when.apply(null, artist_tags).done(function() {
                 compare_bands();
-                console.log(user_tag_list);
                 progress('top tags for artists retrieved...');
                 progress('building user tag profile...');
             });
@@ -125,6 +141,21 @@ function getTopArtists(user) {
 }
 
 $(function() {
+    var $el = $('#similarity');
+    $el.data('oldVal', $el.val());
+
+    $el.change(function() {
+        var $this = $(this);
+        var newValue = $this.data('newVal', $this.val());
+        if(newValue !== $(this).data('oldVal')) {
+            do_comparison();
+        }
+    }).focus(function(){
+        // Get the value when input gains focus
+        var oldValue = $(this).data('oldVal');
+    });
+
+
     $('form').submit(function() {
         /* Create a cache object */
         var cache = new LastFMCache();
@@ -136,6 +167,8 @@ $(function() {
             cache     : cache
         });
 
+        load_band_data();
+
         var userName = $('#username').val();
 
         if(userName === "") {
@@ -145,16 +178,14 @@ $(function() {
             $('#controls').removeClass('error');
             hide_error('#error-msg');
             console.log(userName);
-
+            do_transition();
             user = lastfm.user.getInfo({
                 user: userName
             },
             {
                 success: function(data){
                     console.log(data);
-                    hide_logo();
                     getTopArtists(userName);
-                    $('.output').slideDown(500);
                 },
                 error: function(code, message){
                     show_error('#error-msg', 'LastFM Error', ' retrieving user details from Last.FM. They say: \"' + message + '\"');

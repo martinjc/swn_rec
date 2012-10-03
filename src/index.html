@@ -38,15 +38,14 @@
                     <button id="submit" type="submit" class="btn btn-large">Recommend me some bands!</button>
                 </div>
             </form>
-            <form class="form-inline" id="similarity-form">
+            <form class="form" id="similarity-form">
                 <div class="control-group" id="controls">
-                    <input id="similarity" type="range" max="20" min="0" step="1" value="3">
+                    <label class="control-label" for="similarity">How similar should the bands be?</label>
+                    <div class="input-append">
+                        <span class="add-on">more similar</span><input id="similarity" type="range" max="20" min="0" step="1" value="3"><span class="add-on">less similar</span>
+                    </div>
                 </div>
             </form>
-        </div>
-
-        <div class="container-fluid output">
-            <p></p>
         </div>
 
         <div class="container-fluid band-list">
@@ -72,6 +71,10 @@
                     </ul>
                 </div>
             </div>
+        </div>
+
+        <div class="container-fluid output">
+            <p></p>
         </div>
 
         <footer class="container-fluid">
