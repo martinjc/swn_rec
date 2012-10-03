@@ -37,20 +37,16 @@ function compare_band(band) {
         }
     }
 
-    similarity = total_sum / (a_sum * b_sum);
-
-    // have to hack the fact that some bands just don't have any tags
-    if (similarity === "NaN") {
+    if(a_sum === 0 || b_sum === 0) {
         similarity = 1;
+    } else {
+        similarity = total_sum / (a_sum * b_sum);
     }
-
-    console.log(band.artist + ': ' + similarity);
 
     return similarity;
 }
 
 function load_band_data() {
-    console.log('loading band data');
     band_data = band_data;
     return $.getJSON('data/bands.json', function(data) {
         band_data = data;
@@ -63,25 +59,35 @@ function compare_bands() {
         var day = band_data[i].day;
         var bands = band_data[i].bands;
         for(var j in bands) {
-            if(!($.isEmptyObject(bands[j].tags))) {
-                var similarity = compare_band(bands[j]);
-                if(similarity < req_similarity) {
-                    console.log(bands[j].artist_name);
-                    $('#' + day).append('<li id="' + bands[j].artist_name + '" data-similarity="' + similarity + '">'+ bands[j].artist +'</li>')
-                }
-                else {
-                    console.log('pish');
-                }
-            }
+            var similarity = compare_band(bands[j]);
+            $('#' + day).append('<li id="' + bands[j].artist_name + '">'+ bands[j].artist +'</li>');
+            $('#' + bands[j].artist_name).data('data-similarity', similarity);
         }
     }
     $('.band-list').slideDown(500);
     do_comparison();
 }
 
+function log100(val) {
+    return Math.log(val) / Math.log(100);
+}
+
 function do_comparison(){
     var req_similarity = +$('#similarity').val();
-    req_similarity /= 20;
+    req_similarity = 1.0-log100(req_similarity);
+
+    for(var i in band_data) {
+        var day = band_data[i].day;
+        var bands = band_data[i].bands;
+        for(var j in bands) {
+            var similarity = +$('#' + bands[j].artist_name).data('data-similarity');
+            if(similarity <= req_similarity) {
+                $('#' + bands[j].artist_name).slideDown(200);
+            } else {
+                $('#' + bands[j].artist_name).slideUp(200);
+            }
+        }
+    }
 }
 
 function getArtistTags(artist) {
@@ -100,6 +106,15 @@ function getArtistTags(artist) {
                     } else {
                         user_tags[artist_tags[j].name] += +artist_tags[j].count;
                     }
+                }
+                var max = 0;
+                for(var j in user_tags) {
+                    if(user_tags[j] > max) {
+                        max = user_tags[j];
+                    }
+                }
+                for(var j in user_tags) {
+                    user_tags[j] /= max;
                 }
                 dfd.resolve();
             },
@@ -157,6 +172,13 @@ $(function() {
 
 
     $('form').submit(function() {
+
+        $('.band-list').slideUp(500);
+        $('#thurs').html('');
+        $('#fri').html('');
+        $('#sat').html('');
+        $('#sun').html('');
+
         /* Create a cache object */
         var cache = new LastFMCache();
 
@@ -177,14 +199,12 @@ $(function() {
         } else {
             $('#controls').removeClass('error');
             hide_error('#error-msg');
-            console.log(userName);
             do_transition();
             user = lastfm.user.getInfo({
                 user: userName
             },
             {
                 success: function(data){
-                    console.log(data);
                     getTopArtists(userName);
                 },
                 error: function(code, message){
